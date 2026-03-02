@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Real-Time Voice Translation Demo</title>
+  <meta charset="UTF-8" />
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      padding: 40px;
+    }
+    button {
+      padding: 12px 20px;
+      margin: 10px;
+      font-size: 16px;
+    }
+    .output {
+      margin-top: 30px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Real-Time Speech Translation</h2>
+
+<select id="srcLang">
+  <option value="hi">Hindi</option>
+  <option value="en">English</option>
+  <option value="ta">Tamil</option>
+</select>
+
+<select id="tgtLang">
+  <option value="ta">Tamil</option>
+  <option value="en">English</option>
+  <option value="hi">Hindi</option>
+</select>
+
+<br/>
+
+<button onclick="startRecording()">Start Speaking</button>
+<button onclick="stopRecording()">Stop Speaking</button>
+
+<div class="output">
+  <p><strong>Recognized Speech:</strong></p>
+  <p id="asrText"></p>
+
+  <p><strong>Translated Output:</strong></p>
+  <p id="translatedText"></p>
+</div>
+
+<script>
+let mediaRecorder;
+let audioChunks = [];
+let ws;
+
+// 🔌 Connect WebSocket
+function connectWebSocket() {
+  ws = new WebSocket("wss://unsubrogated-monochromatically-destinee.ngrok-free.dev/ws");
+
+  ws.onopen = () => {
+    console.log("Connected to backend");
+  };
+
+  ws.onmessage = async (event) => {
+    const parsed = JSON.parse(event.data);
+
+    document.getElementById("asrText").innerText = parsed.asr_text;
+    document.getElementById("translatedText").innerText = parsed.translated_text;
+
+    // 🔊 Play backend audio
+    if (parsed.audio_base64) {
+      playAudioFromBase64(parsed.audio_base64);
+    }
+  };
+
+  ws.onerror = (err) => {
+    console.log("WebSocket error:", err);
+  };
+
+  ws.onclose = () => {
+    console.log("Disconnected from backend");
+  };
+}
+
+connectWebSocket();
+
+// 🎤 Start Recording
+async function startRecording() {
+  audioChunks = [];
+
+  const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+  mediaRecorder = new MediaRecorder(stream);
+
+  mediaRecorder.ondataavailable = event => {
+    audioChunks.push(event.data);
+  };
+
+  mediaRecorder.start();
+  console.log("Recording started");
+}
+
+// 🛑 Stop Recording
+function stopRecording() {
+  mediaRecorder.stop();
+
+  mediaRecorder.onstop = async () => {
+    console.log("Recording stopped");
+
+    const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
+
+    const arrayBuffer = await audioBlob.arrayBuffer();
+    const uint8Array = new Uint8Array(arrayBuffer);
+
+    const src = document.getElementById("srcLang").value;
+    const tgt = document.getElementById("tgtLang").value;
+
+    ws.send(JSON.stringify({ src: src, tgt: tgt }));
+
+    setTimeout(() => {
+      ws.send(uint8Array);
+      console.log("Audio sent to backend");
+    }, 100);
+  };
+}
+
+// 🔊 Play backend MP3 audio
+function playAudioFromBase64(base64String) {
+  const binaryString = atob(base64String);
+  const len = binaryString.length;
+  const bytes = new Uint8Array(len);
+
+  for (let i = 0; i < len; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+
+  const blob = new Blob([bytes], { type: "audio/mp3" });
+  const url = URL.createObjectURL(blob);
+
+  const audio = new Audio(url);
+  audio.play();
+}
+</script>
+
+</body>
+</html>
