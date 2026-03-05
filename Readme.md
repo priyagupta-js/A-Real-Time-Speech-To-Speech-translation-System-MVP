@@ -2,3 +2,9 @@
 
 ## Workflow
 Input Layer -> ASR -> MT -> Output layer
+
+# Models
+Faster Whisper , NLLB
+
+## API
+gTT
