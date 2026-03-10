@@ -1,7 +1,7 @@
 ## A Real-time Speech-to-Speech translation system
 
 ## Workflow
-Audio (personA) -> Noise reduction -> VAD -> ASR -> MT -> text-to-audio -> audio(personB)
+Audio (person-A) -> Noise reduction -> VAD -> ASR -> MT -> text-to-audio -> audio(person-B)
 
 # Models
 Faster Whisper , NLLB
