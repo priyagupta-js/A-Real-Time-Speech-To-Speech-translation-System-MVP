@@ -4,7 +4,7 @@
 Audio (person-A) -> Noise reduction -> VAD -> ASR -> MT -> text-to-audio -> audio(person-B)
 
 # Models
-Faster Whisper , NLLB
+Faster Whisper, NLLB
 
 ## API
 gTT
