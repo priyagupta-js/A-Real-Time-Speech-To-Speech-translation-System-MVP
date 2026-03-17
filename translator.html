@@ -1,150 +1,3 @@
- <!-- <!DOCTYPE html><html>
-<head>
-  <title>Real-Time Voice Translation Demo</title>
-  <meta charset="UTF-8" />
-  <style>
-    body {
-      font-family: Arial;
-      text-align: center;
-      padding: 40px;
-    }
-    button {
-      padding: 12px 20px;
-      margin: 10px;
-      font-size: 16px;
-    }
-    .output {
-      margin-top: 30px;
-      font-size: 18px;
-    }
-  </style>
-</head>
-<body>
-
-<h2>Real-Time Voice Translation</h2>
-
-<select id="srcLang">
-  <option value="hi">Hindi</option>
-  <option value="en">English</option>
-  <option value="ta">Tamil</option>
-</select>
-
-<select id="tgtLang">
-  <option value="ta">Tamil</option>
-  <option value="en">English</option>
-  <option value="hi">Hindi</option>
-</select>
-
-<br/>
-
-<button onclick="startRecording()">Start Speaking</button>
-<button onclick="stopRecording()">Stop Speaking</button>
-
-<div class="output">
-  <p><strong>Recognized Speech:</strong></p>
-  <p id="asrText"></p>
-
-  <p><strong>Translated Output:</strong></p>
-  <p id="translatedText"></p>
-</div>
-
-<script>
-let mediaRecorder;
-let audioChunks = [];
-let ws;
-
-// 🔌 Connect WebSocket
-function connectWebSocket() {
-  ws = new WebSocket("wss://unsubrogated-monochromatically-destinee.ngrok-free.dev/ws");
-
-  ws.onopen = () => {
-    console.log("Connected to backend");
-  };
-
-  ws.onmessage = async (event) => {
-    const parsed = JSON.parse(event.data);
-
-    document.getElementById("asrText").innerText = parsed.asr_text;
-    document.getElementById("translatedText").innerText = parsed.translated_text;
-
-    // 🔊 Play backend audio
-    if (parsed.audio_base64) {
-      playAudioFromBase64(parsed.audio_base64);
-    }
-  };
-
-  ws.onerror = (err) => {
-    console.log("WebSocket error:", err);
-  };
-
-  ws.onclose = () => {
-    console.log("Disconnected from backend");
-  };
-}
-
-connectWebSocket();
-
-// 🎤 Start Recording
-async function startRecording() {
-  audioChunks = [];
-
-  const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-
-  mediaRecorder = new MediaRecorder(stream);
-
-  mediaRecorder.ondataavailable = event => {
-    audioChunks.push(event.data);
-  };
-
-  mediaRecorder.start();
-  console.log("Recording started");
-}
-
-// 🛑 Stop Recording
-function stopRecording() {
-  mediaRecorder.stop();
-
-  mediaRecorder.onstop = async () => {
-    console.log("Recording stopped");
-
-    const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
-
-    const arrayBuffer = await audioBlob.arrayBuffer();
-    const uint8Array = new Uint8Array(arrayBuffer);
-
-    const src = document.getElementById("srcLang").value;
-    const tgt = document.getElementById("tgtLang").value;
-
-    ws.send(JSON.stringify({ src: src, tgt: tgt }));
-
-    setTimeout(() => {
-      ws.send(uint8Array);
-      console.log("Audio sent to backend");
-    }, 100);
-  };
-}
-
-// 🔊 Play backend MP3 audio
-function playAudioFromBase64(base64String) {
-  const binaryString = atob(base64String);
-  const len = binaryString.length;
-  const bytes = new Uint8Array(len);
-
-  for (let i = 0; i < len; i++) {
-    bytes[i] = binaryString.charCodeAt(i);
-  }
-
-  const blob = new Blob([bytes], { type: "audio/mp3" });
-  const url = URL.createObjectURL(blob);
-
-  const audio = new Audio(url);
-  audio.play();
-}
-</script>
-
-</body>
- </html> 
- -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -152,7 +5,6 @@ function playAudioFromBase64(base64String) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>VoiceBridge — Real-Time Translation</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg:        #050a12;
@@ -189,7 +41,7 @@ function playAudioFromBase64(base64String) {
     body {
       background: var(--bg);
       color: var(--text);
-       font-family: 'Roboto', sans-serif;
+      font-family: 'Space Mono', monospace;
       min-height: 100vh;
       overflow-x: hidden;
       position: relative;
@@ -257,7 +109,7 @@ function playAudioFromBase64(base64String) {
     }
     h1 {
       font-family: 'Orbitron', monospace;
-      font-size: clamp(26px, 5vw, 49px);
+      font-size: clamp(26px, 5vw, 44px);
       font-weight: 900;
       letter-spacing: .12em;
       background: linear-gradient(120deg, var(--accent) 0%, var(--accent2) 100%);
@@ -266,13 +118,11 @@ function playAudioFromBase64(base64String) {
       background-clip: text;
     }
     .tagline {
-      font-size: 13px;
-      font-weight: 700;
+      font-size: 11px;
       letter-spacing: .25em;
       text-transform: uppercase;
       color: var(--dim);
       margin-top: 6px;
-
     }
 
     /* ── status badge ── */
@@ -293,7 +143,7 @@ function playAudioFromBase64(base64String) {
     .status-dot.error   { background: #ff4466; box-shadow: 0 0 10px #ff4466; }
     @keyframes blink { 0%,100%{opacity:1}50%{opacity:.4} }
     .status-text {
-      font-size: 12px;
+      font-size: 11px;
       letter-spacing: .15em;
       text-transform: uppercase;
       color: var(--dim);
@@ -311,11 +161,10 @@ function playAudioFromBase64(base64String) {
     }
     .lang-block { display: flex; flex-direction: column; gap: 8px; }
     .lang-label {
-      font-size: 13px;
+      font-size: 10px;
       letter-spacing: .2em;
       text-transform: uppercase;
       color: var(--dim);
-      font-weight: bold;
     }
     .lang-select-wrap {
       position: relative;
@@ -624,9 +473,9 @@ function playAudioFromBase64(base64String) {
           <path d="M12 1C6.48 1 2 5.48 2 11c0 2.76 1.12 5.26 2.93 7.07L2 22l3.93-2.93A9.95 9.95 0 0012 21c5.52 0 10-4.48 10-10S17.52 1 12 1zm-1 14H9V9h2v6zm4 0h-2V9h2v6z"/>
         </svg>
       </div>
-      <h1>VOICE-BRIDGE</h1>
+      <h1>VOICEBRIDGE</h1>
     </div>
-    <p class="tagline">Real-Time Voice Translation System</p>
+    <p class="tagline">Neural Real-Time Language Translation System</p>
   </header>
 
   <!-- Status -->
