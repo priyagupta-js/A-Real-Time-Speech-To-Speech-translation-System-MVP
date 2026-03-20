@@ -13,3 +13,4 @@ gTT
 
 
 ## UI
+frontend - HTML, CSS, Javascript
