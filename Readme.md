@@ -14,3 +14,6 @@ gTT
 
 ## UI
 frontend - HTML, CSS, Javascript
+
+## backend 
+FastAPI
