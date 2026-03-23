@@ -11,7 +11,7 @@ DeepFilterNet, Faster Whisper, NLLB
 gTT
 
 ## UI
-frontend - HTML, CSS, Javascript
+frontend - HTML, CSS, Javascript / mobile applications
 
 ## backend 
 FastAPI
