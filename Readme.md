@@ -14,5 +14,5 @@ gTT
 frontend - HTML, CSS, Javascript / React Native
 
 ## backend 
-FastAPI
+FastAPI , webSocket
 
