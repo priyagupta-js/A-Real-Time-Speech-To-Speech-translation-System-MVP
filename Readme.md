@@ -3,7 +3,6 @@
 ## Workflow
 Audio (Person-A) -> Noise reduction -> VAD -> ASR -> MT -> text-to-audio -> audio (Person-B)
 
-
 # Models
 DeepFilterNet, Faster Whisper, NLLB
 
@@ -15,4 +14,8 @@ frontend - HTML, CSS, Javascript / React Native
 
 ## backend 
 FastAPI , WebSocket
+
+## usage
+deployed in public spaces
+
 
