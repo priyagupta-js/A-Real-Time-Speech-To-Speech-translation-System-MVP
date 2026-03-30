@@ -19,3 +19,4 @@ FastAPI , WebSocket
 deployed in public spaces - hospitals, police stations , railway stations
 
 
+
