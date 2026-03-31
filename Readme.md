@@ -4,7 +4,7 @@
 Audio (Person-A) -> Noise reduction -> VAD -> ASR -> MT -> text-to-audio -> audio (Person-B)
 
 # Models
-DeepFilterNet, Faster Whisper, NLLB
+DeepFilterNet, Faster Whisper (Medium), NLLB
 
 ## API
 gTT
