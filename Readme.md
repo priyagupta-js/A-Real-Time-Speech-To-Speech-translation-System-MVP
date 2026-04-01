@@ -8,7 +8,7 @@ DeepFilterNet, Faster Whisper (Medium), NLLB
 
 ## API
 gTT
-
+   
 ## UI
 frontend - HTML, CSS, Javascript / React Native
 
