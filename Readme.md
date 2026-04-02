@@ -16,7 +16,7 @@ frontend - HTML, CSS, Javascript / React Native
 FastAPI , WebSocket
 
 ## usage
-deployed in public spaces - hospitals, police stations , railway stations
+deployed in public spaces - hospitals, police stations , railway stations.
 
 
 
