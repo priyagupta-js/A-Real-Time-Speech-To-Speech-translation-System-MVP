@@ -16,7 +16,7 @@ frontend - HTML, CSS, Javascript / React Native
 FastAPI , WebSocket
 
 ## usage
-It can be deployed in public spaces - hospitals, police stations , railway stations.
+It can be deployed in public spaces - hospitals, police stations, railway stations.
 
 
 
