@@ -725,7 +725,7 @@ function playAudioFromBase64(base64String) {
 
 </div>
 
-<footer>VOICEBRIDGE v1.0 — NEURAL TRANSLATION ENGINE — WEBSOCKET CONNECTED</footer>
+<!-- <footer>VOICEBRIDGE v1.0 — NEURAL TRANSLATION ENGINE — WEBSOCKET CONNECTED</footer> -->
 
 <script>
 let mediaRecorder;
@@ -841,9 +841,29 @@ function toggleTheme() {
 
 
 function playAudioFromBase64(base64String) {
-  const bytes = Uint8Array.from(atob(base64String), c => c.charCodeAt(0));
-  const blob = new Blob([bytes], { type: 'audio/mp3' });
-  new Audio(URL.createObjectURL(blob)).play();
+  try {
+    const clean = base64String.includes(",") 
+      ? base64String.split(",")[1] 
+      : base64String;
+
+    const bytes = Uint8Array.from(atob(clean), c => c.charCodeAt(0));
+    const blob = new Blob([bytes], { type: 'audio/mpeg' });
+    const url = URL.createObjectURL(blob);
+    const audio = new Audio(url);
+
+    audio.play()
+      .then(() => URL.revokeObjectURL(url))   // ← free memory after playing
+      .catch(err => {
+        console.warn("Autoplay blocked:", err);
+        // Show a play button as fallback
+        const btn = document.createElement('button');
+        btn.textContent = '🔊 Play Translation';
+        btn.onclick = () => { audio.play(); btn.remove(); };
+        document.querySelector('.btn-row').appendChild(btn);
+      });
+  } catch (err) {
+    console.error("Audio playback failed:", err);
+  }
 }
 </script>
 </body>
